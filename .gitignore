@@ -121,3 +121,7 @@ venv.bak/
 
 # private macros
 macros_private.py
+
+# local training data and experiment logs (verification_grpo)
+datasets/
+wandb/
