@@ -46,9 +46,9 @@ def build_config(args):
     config.train.num_epochs = args.epochs
     config.experiment.epoch_every_n_steps = args.steps_per_epoch
 
-    # ---- rollout eval ----
-    config.experiment.rollout.enabled = True
-    config.experiment.rollout.n = args.n_rollouts
+    # ---- rollout eval ---- (n_rollouts<=0 disables eval, e.g. for verifier-only training)
+    config.experiment.rollout.enabled = bool(args.n_rollouts > 0)
+    config.experiment.rollout.n = max(args.n_rollouts, 1)
     config.experiment.rollout.horizon = args.horizon
     config.experiment.rollout.rate = args.rollout_rate
     config.experiment.rollout.warmstart = 0
