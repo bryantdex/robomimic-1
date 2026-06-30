@@ -33,6 +33,12 @@ def build_config(args):
     config.train.num_data_workers = 2
     config.train.seed = args.seed
 
+    # ---- optional warm-start: load initial policy weights from a checkpoint ----
+    # (used by the EMA mean-teacher loop so each round's student continues from the
+    #  previous student's weights -- weight-space EMA only makes sense in one basin)
+    if args.init_ckpt not in (None, "None", "none", ""):
+        config.experiment.ckpt_path = args.init_ckpt
+
     # ---- BC policy: GMM head (standard robomimic low-dim BC; also gives a
     #      stochastic policy we can sample K times for verification) ----
     config.algo.gmm.enabled = True
@@ -71,6 +77,7 @@ def main():
     p.add_argument("--name", required=True)
     p.add_argument("--output_dir", required=True)
     p.add_argument("--filter_key", default=None)
+    p.add_argument("--init_ckpt", default=None, help="warm-start policy weights from this checkpoint (EMA student continuation)")
     p.add_argument("--epochs", type=int, default=150)
     p.add_argument("--steps_per_epoch", type=int, default=100)
     p.add_argument("--n_rollouts", type=int, default=50)
